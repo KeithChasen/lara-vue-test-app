@@ -1,7 +1,6 @@
 
 import Home from './components/Home';
 import Login from './components/auth/Login'
-import Register from './components/auth/Register'
 
 import UsersMain from './components/users/Main'
 import UsersList from './components/users/List'
@@ -24,10 +23,6 @@ export const routes = [
     {
         path: '/login',
         component: Login
-    },
-    {
-        path: '/register',
-        component: Register
     },
     {
         path: '/users',

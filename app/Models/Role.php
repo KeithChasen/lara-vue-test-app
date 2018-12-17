@@ -17,4 +17,12 @@ class Role extends Model
     protected $fillable = [
         'role'
     ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function user()
+    {
+        return $this->hasOne(User::class);
+    }
 }
