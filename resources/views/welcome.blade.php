@@ -5,6 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>Test App</title>
+
+        <link href="{{ asset('css/app.css') }}" rel="stylesheet"/>
     </head>
     <body>
         <div id="app">
