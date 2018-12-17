@@ -1,6 +1,7 @@
 <template>
     <div class="container">
-        HOME
+        Home Page.
+        You're logged in!
     </div>
 </template>
 

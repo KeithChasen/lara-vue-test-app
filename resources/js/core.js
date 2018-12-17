@@ -1,25 +1,26 @@
 export function bootstrap(store, router) {
     router.beforeEach((to, from, next) => {
         const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-    const currentUser = store.state.currentUser;
+        const currentUser = store.state.currentUser;
 
-    if(requiresAuth && !currentUser) {
-        next('/login');
-    } else if(to.path == '/login' && currentUser) {
-        next('/');
-    } else {
-        next();
-    }
-});
+        if (requiresAuth && !currentUser) {
+            next('/login');
+        } else if(to.path == '/login' && currentUser) {
+            next('/');
+        } else {
+            next();
+        }
+    });
 
     axios.interceptors.response.use(null, (error) => {
         if (error.resposne.status == 401) {
-        store.commit('logout');
-        router.push('/login');
-    }
+            store.commit('logout');
+            router.push('/login');
+        }
 
-    return Promise.reject(error);
-});
+        return Promise.reject(error);
+
+    });
 
     if (store.getters.currentUser) {
         setAuthorization(store.getters.currentUser.token);
