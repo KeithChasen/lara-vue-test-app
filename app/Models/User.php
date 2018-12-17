@@ -48,4 +48,12 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function pictures()
+    {
+        return $this->belongsToMany(Picture::class, 'user_picture');
+    }
 }
