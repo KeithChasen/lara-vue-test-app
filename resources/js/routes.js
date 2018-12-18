@@ -6,6 +6,7 @@ import UsersMain from './components/users/Main'
 import UsersList from './components/users/List'
 import NewUser from './components/users/New'
 import User from './components/users/View'
+import UserEdit from './components/users/Edit'
 
 import PhotosMain from './components/photos/Main'
 import PhotosList from './components/photos/List'
@@ -42,6 +43,10 @@ export const routes = [
             {
                 path: ':id',
                 component: User
+            },
+            {
+                path: 'edit/:id',
+                component: UserEdit
             }
         ]
     },

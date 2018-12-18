@@ -85,6 +85,18 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if (Gate::allows('admin')) {
+            try {
+                $user = User::findOrFail($id);
+                $user->delete();
+
+                return response()->json([], 200);
+            } catch (\Exception $e) {
+                //todo: log stuff
+                return response()->json(['error' => 'Something went wrong'], 500);
+            }
+        }
+
+        return response()->json(['error' => 'Forbidden'], 403);
     }
 }

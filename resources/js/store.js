@@ -50,6 +50,12 @@ export default {
         updateUsers: (state, payload) => {
             state.isAdmin = true;
             state.users = payload
+        },
+        deleteUser: (state, user) => {
+            state.isAdmin = true;
+            let index = state.users.indexOf(user);
+            state.users.splice(index, 1);
+
         }
 },
     actions: {
@@ -60,6 +66,16 @@ export default {
                     context.commit('updateUsers', response.data.users)
                 }
             })
-            .catch((error) => { context.commit('logout') })
+            .catch((error) => { context.commit('logout') }),
+
+        removeUser: (context, user) =>
+
+            axios.delete(`/api/users/${user.id}`)
+            .then((response) => {
+                if (response.status === 200) {
+                     context.commit('deleteUser', user)
+                }
+            })
+            .catch((error) => { context.commit('logout') }),
     }
 }

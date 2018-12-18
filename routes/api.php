@@ -13,5 +13,6 @@ Route::group(
 Route::group(['middleware' => 'jwt.auth'], function ($router) {
     $router->get('users', 'UserController@index');
     $router->get('users/{id}', 'UserController@show');
+    $router->delete('users/{id}', 'UserController@destroy');
     $router->post('users', 'UserController@store');
 });

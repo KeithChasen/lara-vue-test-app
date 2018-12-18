@@ -13,7 +13,7 @@ export function bootstrap(store, router) {
     });
 
     axios.interceptors.response.use(null, (error) => {
-        if (error.response.status == 401 || error.response.status == 403) {
+        if (error.response.status == 401 || error.response.status == 403 || error.response.status == 500) {
             store.commit('logout');
             router.push('/login');
         }
