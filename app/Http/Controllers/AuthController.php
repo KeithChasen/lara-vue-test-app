@@ -130,6 +130,6 @@ class AuthController extends Controller
      */
     protected function returnAuthUser()
     {
-        return Auth::Guard('api')->user()->with('role')->get();
+        return Auth::Guard('api')->user()->with('role')->first();
     }
 }
