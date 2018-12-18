@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreateUpdateUserRequest;
-use Illuminate\Http\Request;
+use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\UpdateUserRequest;
+use App\Models\Role;
 use App\Models\User;
 use Gate;
 
@@ -34,14 +35,28 @@ class UserController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param CreateUserRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(CreateUpdateUserRequest $request)
+    public function store(CreateUserRequest $request)
     {
-        //
+        if (Gate::allows('admin')) {
+            try {
+                $user = User::create([
+                    'name' => $request->get('name'),
+                    'email' => $request->get('email'),
+                    'password' => bcrypt($request->get('password')),
+                    'role_id' => Role::where('role', Role::USER_ROLE)->first()->id
+                ]);
+
+                return response()->json(['user' => $user], 200);
+            } catch (\Exception $e) {
+                //todo: log stuff
+                return response()->json(['error' => 'Something went wrong'], 500);
+            }
+        }
+
+        return response()->json(['error' => 'Forbidden'], 403);
     }
 
     /**
@@ -71,11 +86,11 @@ class UserController extends Controller
     }
 
     /**
-     * @param CreateUpdateUserRequest $request
+     * @param UpdateUserRequest $request
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(CreateUpdateUserRequest $request, $id)
+    public function update(UpdateUserRequest $request, $id)
     {
         if (Gate::allows('admin')) {
             try {

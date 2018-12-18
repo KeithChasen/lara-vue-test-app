@@ -63,8 +63,6 @@
 
                 const errors = validate(this.user, constraints);
 
-                // console.log(this.user);
-
                 if (errors) {
                     this.errors = errors;
                     return;
