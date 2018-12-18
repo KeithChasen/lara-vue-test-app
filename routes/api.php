@@ -10,10 +10,22 @@ Route::group(
     });
 });
 
-Route::group(['middleware' => 'jwt.auth'], function ($router) {
-    $router->get('users', 'UserController@index');
-    $router->get('users/{id}', 'UserController@show');
-    $router->delete('users/{id}', 'UserController@destroy');
-    $router->put('users/{id}', 'UserController@update');
-    $router->post('users', 'UserController@store');
+Route::group(['middleware' => 'jwt.auth'], function () {
+
+    Route::prefix('users')->group(function ($router) {
+        $router->get('/', 'UserController@index');
+        $router->get('/{id}', 'UserController@show');
+        $router->delete('/{id}', 'UserController@destroy');
+        $router->put('/{id}', 'UserController@update');
+        $router->post('/', 'UserController@store');
+    });
+
+    Route::prefix('photos')->group(function ($router) {
+        $router->get('/', 'PhotoController@index');
+        $router->get('/{id}', 'PhotoController@show');
+        $router->delete('/{id}', 'PhotoController@destroy');
+        $router->put('/{id}', 'PhotoController@update');
+        $router->post('/', 'PhotoController@store');
+    });
+
 });

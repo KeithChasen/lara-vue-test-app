@@ -19,7 +19,7 @@
                     </template>
                     <template v-else>
                         <li v-if="currentUser.role.role === 'admin'">
-                            <router-link to="/users" class="nav-link">Users</router-link>
+                            <router-link to="/admin" class="nav-link">Admin</router-link>
                         </li>
                         <li class="nav-item dropdown">
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false" aria-haspopup="true">

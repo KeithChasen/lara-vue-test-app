@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="btn-wrapper">
-            <router-link :to="`/users/new`" class="btn btn-primary btn-sm">New</router-link>
+            <router-link :to="`/admin/users/new`" class="btn btn-primary btn-sm">New</router-link>
         </div>
         <table class="table">
             <thead>
@@ -18,7 +18,7 @@
                         <td>{{ user.name }}</td>
                         <td>{{ user.email }}</td>
                         <td>{{ user.role.role }}</td>
-                        <router-link :to="`/users/edit/${user.id}`" class="crud-button btn btn-info btn-sm">E</router-link>
+                        <router-link :to="`/admin/users/edit/${user.id}`" class="crud-button btn btn-info btn-sm">E</router-link>
                         <button class="crud-button btn btn-danger btn-sm" v-on:click="removeUser(user)">D</button>
                     </tr>
                 </template>

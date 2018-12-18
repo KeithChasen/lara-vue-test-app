@@ -55,7 +55,7 @@
 
                 axios.post('/api/users', this.$data.user)
                     .then((response) => {
-                        this.$router.push('/users');
+                        this.$router.push('admin/users');
                     });
             },
             getConstraints() {

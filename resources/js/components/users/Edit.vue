@@ -3,22 +3,22 @@
         <form @submit.prevent="update">
             <div class="form-group">
                 <label for="name">Name</label>
-                <input type="text" id="name" class="form-control" v-model="user.name" value="">
+                <input type="text" id="name" class="form-control" v-model="user.name">
             </div>
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" class="form-control" v-model="user.email" value="">
+                <input type="email" id="email" class="form-control" v-model="user.email">
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" class="form-control" v-model="user.password" value="">
+                <input type="password" id="password" class="form-control" v-model="user.password">
             </div>
             <button type="submit" class="btn btn-primary">Update</button>
         </form>
         <div class="errors" v-if="errors">
             <ul>
                 <li v-for="(fieldsError, fieldName) in errors" :key="fieldName">
-                    <strong>{{ fieldName }}</strong> {{ fieldsError.join('\n')}}
+                    <strong>{{ fieldName }}</strong> {{ fieldsError.join('\n') }}
                 </li>
             </ul>
         </div>

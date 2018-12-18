@@ -2,7 +2,7 @@ require('./bootstrap');
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Vuex from 'vuex';
-import {routes} from './routes';
+import {routes} from './routes/routes';
 import StoreData from './store';
 import MainApp from './components/MainApp.vue';
 import {bootstrap} from './core'
