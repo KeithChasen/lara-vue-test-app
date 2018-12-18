@@ -8,9 +8,10 @@ Route::group(
         $router->post('auth/refresh', ['as' => 'auth.refresh', 'uses' => 'AuthController@refresh']);
         $router->post('logout', ['as' => 'auth.logout', 'uses' => 'AuthController@logout']);
     });
-    $router->group(['middleware' => 'jwt.auth'], function ($router) {
-        $router->get('customers', 'CustomersController@index');
-        $router->get('customers/{id}', 'CustomersController@show');
-        $router->post('customers', 'CustomersController@store');
-    });
+});
+
+Route::group(['middleware' => 'jwt.auth'], function ($router) {
+    $router->get('users', 'UserController@index');
+    $router->get('users/{id}', 'UserController@show');
+    $router->post('users', 'UserController@store');
 });

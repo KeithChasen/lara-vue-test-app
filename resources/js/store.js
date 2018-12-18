@@ -8,6 +8,7 @@ export default {
         isLoggedIn: !!user,
         loading: false,
         auth_error: null,
+        isAdmin: user ? user.role.role === 'admin' : false,
         users: [],
         photos: []
     },
@@ -17,6 +18,7 @@ export default {
         authError: state => state.auth_error,
         users: state => state.users,
         photos: state => state.photos,
+        isAdmin: state => state.isAdmin
     },
     mutations: {
         login: state => {
@@ -43,9 +45,21 @@ export default {
             localStorage.removeItem('user');
             state.isLoggedIn = false;
             state.currentUser = null;
+            state.isAdmin = false;
+        },
+        updateUsers: (state, payload) => {
+            state.isAdmin = true;
+            state.users = payload
         }
-    },
+},
     actions: {
-        login: context => context.commit('login')
+        login: context => context.commit('login'),
+        getUsers: context => axios.get('/api/users')
+            .then((response) => {
+                if (response.status === 200) {
+                    context.commit('updateUsers', response.data.users)
+                }
+            })
+            .catch((error) => { context.commit('logout') })
     }
 }
