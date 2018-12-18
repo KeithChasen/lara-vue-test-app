@@ -1,11 +1,10 @@
 <template>
     <div>
         <div class="btn-wrapper">
-            <router-link to="/user/new" class="btn btn-primary btn-sm">New</router-link>
+            <router-link :to="`/user/new`" class="btn btn-primary btn-sm">New</router-link>
         </div>
         <table class="table">
             <thead>
-            <th>ID</th>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Role</th>
@@ -16,13 +15,10 @@
                 </template>
                 <template v-else>
                     <tr v-for="user in users" :key="user.id">
-
-                        <td>{{ user.id }}</td>
-
                         <td>{{ user.name }}</td>
                         <td>{{ user.email }}</td>
                         <td>{{ user.role.role }}</td>
-                        <router-link to="`/user/edit/${user.id}`" class="crud-button btn btn-info btn-sm">E</router-link>
+                        <router-link :to="`/users/edit/${user.id}`" class="crud-button btn btn-info btn-sm">E</router-link>
                         <button class="crud-button btn btn-danger btn-sm" v-on:click="removeUser(user)">D</button>
                     </tr>
                 </template>

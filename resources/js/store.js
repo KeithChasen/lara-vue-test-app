@@ -55,11 +55,11 @@ export default {
             state.isAdmin = true;
             let index = state.users.indexOf(user);
             state.users.splice(index, 1);
-
         }
 },
     actions: {
         login: context => context.commit('login'),
+
         getUsers: context => axios.get('/api/users')
             .then((response) => {
                 if (response.status === 200) {
@@ -69,7 +69,6 @@ export default {
             .catch((error) => { context.commit('logout') }),
 
         removeUser: (context, user) =>
-
             axios.delete(`/api/users/${user.id}`)
             .then((response) => {
                 if (response.status === 200) {
