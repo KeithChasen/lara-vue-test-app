@@ -6,7 +6,6 @@ export default {
     state: {
         currentUser: user,
         isLoggedIn: !!user,
-        loading: false,
         auth_error: null,
         isAdmin: user ? user.role.role === 'admin' : false,
         users: [],
@@ -21,14 +20,11 @@ export default {
         isAdmin: state => state.isAdmin
     },
     mutations: {
-        login: state => {
-            state.loading = true;
-            state.auth_error = null;
-        },
+        login: state => state.auth_error = null,
+
         loginSuccess: (state, payload) => {
             state.auth_error = null;
             state.isLoggedIn = true;
-            state.loading = false;
             state.currentUser = Object.assign(
                 {},
                 payload.user,
@@ -37,22 +33,18 @@ export default {
 
             localStorage.setItem('user', JSON.stringify(state.currentUser));
         },
-        loginFailed: (state, payload) => {
-            state.loading = false;
-            state.auth_error = payload.error;
-        },
+
+        loginFailed: (state, payload) => state.auth_error = payload.error,
+
         logout: state => {
             localStorage.removeItem('user');
             state.isLoggedIn = false;
             state.currentUser = null;
-            state.isAdmin = false;
         },
-        updateUsers: (state, payload) => {
-            state.isAdmin = true;
-            state.users = payload
-        },
+
+        updateUsers: (state, payload) => state.users = payload,
+
         deleteUser: (state, user) => {
-            state.isAdmin = true;
             let index = state.users.indexOf(user);
             state.users.splice(index, 1);
         }
@@ -66,7 +58,7 @@ export default {
                     context.commit('updateUsers', response.data.users)
                 }
             })
-            .catch((error) => { context.commit('logout') }),
+            .catch((error) => {  }),
 
         removeUser: (context, user) =>
             axios.delete(`/api/users/${user.id}`)
@@ -75,6 +67,6 @@ export default {
                      context.commit('deleteUser', user)
                 }
             })
-            .catch((error) => { context.commit('logout') }),
+            .catch((error) => {  }),
     }
 }
