@@ -44,6 +44,8 @@ export default {
 
         updateUsers: (state, payload) => state.users = payload,
 
+        updatePhotos: (state, payload) => state.photos = payload,
+
         deleteUser: (state, user) => {
             let index = state.users.indexOf(user);
             state.users.splice(index, 1);
@@ -65,6 +67,17 @@ export default {
             .then((response) => {
                 if (response.status === 200) {
                      context.commit('deleteUser', user)
+                }
+            })
+            .catch((error) => {  }),
+
+        getPhotos: context => axios.get('/api/photos')
+            .then((response) => {
+
+                console.log(response);
+
+                if (response.status === 200) {
+                    context.commit('updatePhotos', response.data.photos)
                 }
             })
             .catch((error) => {  }),
