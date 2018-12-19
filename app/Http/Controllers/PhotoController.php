@@ -28,7 +28,7 @@ class PhotoController extends Controller
             return response()->json(['photos' => $this->pictureService->all()], 200);
         }
 
-        return response()->json(['error' => 'Forbidden'], 403);
+        return response()->json(['photos' => $this->pictureService->getUserPictures()], 200);
     }
 
     /**

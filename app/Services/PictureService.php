@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Storage;
+use Auth;
 use App\Models\Picture;
 
 class PictureService
@@ -62,6 +63,14 @@ class PictureService
             Storage::disk('public')->delete($file->path);
             $file->delete();
         }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUserPictures()
+    {
+        return Auth::user()->pictures()->get();
     }
 
 }
