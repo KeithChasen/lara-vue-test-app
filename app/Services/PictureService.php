@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use Storage;
 use Auth;
 use App\Models\Picture;
@@ -71,6 +72,42 @@ class PictureService
     public function getUserPictures()
     {
         return Auth::user()->pictures()->get();
+    }
+
+    /**
+     * @param $id
+     * @return array
+     */
+    public function show($id)
+    {
+        $photo = $this->find($id);
+        $userIds = $this->getUserIds($photo);
+        $users = User::nonAdmin()->get();
+        return [
+            'photo' => $photo,
+            'users' => $users,
+            'userIds' => $userIds
+        ];
+    }
+
+    /**
+     * @param $id
+     * @param $ids
+     */
+    public function update($id, $ids)
+    {
+        $photo = $this->find($id);
+
+        $userIds = $this->getUserIds($photo);
+
+        $detach = array_diff($userIds, $ids);
+        $attach = array_diff($ids,$userIds);
+
+        if (!empty($attach))
+            $photo->users()->attach($attach);
+
+        if (!empty($detach))
+            $photo->users()->detach($detach);
     }
 
 }

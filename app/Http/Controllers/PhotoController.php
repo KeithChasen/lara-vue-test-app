@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UploadPictureRequest;
-use App\Models\User;
 use App\Services\PictureService;
 use Illuminate\Http\Request;
 use Gate;
@@ -53,9 +52,12 @@ class PhotoController extends Controller
             return response()->json(['error' => 'Forbidden'], 403);
         }
 
-        $photo = $this->pictureService->store($request->file('photo'));
-
-        return response()->json(['photo' => $photo],201);
+        return response()->json(
+            [
+                'photo' => $this->pictureService->store($request->file('photo'))
+            ],
+            201
+        );
     }
 
     /**
@@ -71,16 +73,8 @@ class PhotoController extends Controller
         }
 
         try {
-            $photo = $this->pictureService->find($id);
-            $userIds = $this->pictureService->getUserIds($photo);
-            $users = User::nonAdmin()->get();
-
             return response()->json(
-                [
-                    'photo' => $photo,
-                    'users' => $users,
-                    'userIds' => $userIds
-                ],
+                $this->pictureService->show($id),
                 200
             );
         } catch (\Exception $e) {
@@ -114,19 +108,7 @@ class PhotoController extends Controller
         }
 
         try {
-            $photo = $this->pictureService->find($id);
-
-            $userIds = $this->pictureService->getUserIds($photo);
-            $ids = $request->get('ids');
-
-            $detach = array_diff($userIds, $ids);
-            $attach = array_diff($ids,$userIds);
-
-            if (!empty($attach))
-                $photo->users()->attach($attach);
-
-            if (!empty($detach))
-                $photo->users()->detach($detach);
+            $this->pictureService->update($id, $request->get('ids'));
 
             return response()->json([], 200);
         } catch (\Exception $e) {

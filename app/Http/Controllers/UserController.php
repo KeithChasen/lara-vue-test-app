@@ -4,12 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use App\Models\Role;
-use App\Models\User;
+use App\Services\UserService;
 use Gate;
 
 class UserController extends Controller
 {
+    protected $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -18,7 +24,12 @@ class UserController extends Controller
     public function index()
     {
         if (Gate::allows('admin')) {
-            return response()->json(['users' => User::with('role')->get()], 200);
+            return response()->json(
+                [
+                    'users' => $this->userService->getUserWithRole()
+                ],
+                200
+            );
         }
 
         return response()->json(['error' => 'Forbidden'], 403);
@@ -42,14 +53,12 @@ class UserController extends Controller
     {
         if (Gate::allows('admin')) {
             try {
-                $user = User::create([
-                    'name' => $request->get('name'),
-                    'email' => $request->get('email'),
-                    'password' => bcrypt($request->get('password')),
-                    'role_id' => Role::where('role', Role::USER_ROLE)->first()->id
-                ]);
-
-                return response()->json(['user' => $user], 200);
+                return response()->json(
+                    [
+                        'user' => $this->userService->create($request)
+                    ],
+                    200
+                );
             } catch (\Exception $e) {
                 //todo: log stuff
                 return response()->json(['error' => 'Something went wrong'], 500);
@@ -68,7 +77,12 @@ class UserController extends Controller
     public function show($id)
     {
         if (Gate::allows('admin')) {
-            return response()->json(['user' => User::findOrFail($id)], 200);
+            return response()->json(
+                [
+                    'user' => $this->userService->find($id)
+                ],
+                200
+            );
         }
 
         return response()->json(['error' => 'Forbidden'], 403);
@@ -94,21 +108,16 @@ class UserController extends Controller
     {
         if (Gate::allows('admin')) {
             try {
-                $user = User::findOrFail($id);
-                $user->name = $request->get('name');
-                $user->email = $request->get('email');
-                if ($request->get('password')) {
-                    $user->password = bcrypt($request->get('password'));
-                }
-                $user->update();
-
-                return response()->json(['user' => $user], 200);
+                return response()->json(
+                    [
+                        'user' => $this->userService->update($request, $id)
+                    ],
+                    200
+                );
             } catch (\Exception $e) {
                 //todo: log stuff
                 return response()->json(['error' => 'Something went wrong'], 500);
             }
-
-
         }
 
         return response()->json(['error' => 'Forbidden'], 403);
@@ -124,9 +133,7 @@ class UserController extends Controller
     {
         if (Gate::allows('admin')) {
             try {
-                $user = User::findOrFail($id);
-                $user->delete();
-
+                $this->userService->delete($id);
                 return response()->json([], 200);
             } catch (\Exception $e) {
                 //todo: log stuff
