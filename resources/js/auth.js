@@ -4,6 +4,9 @@ export function login(credentials) {
     return new Promise((res, rej) => {
         axios.post('/api/auth/login', credentials)
         .then((response) => {
+
+            console.log(response);
+
             setAuthorization(response.data.access_token);
             res(response.data);
         })

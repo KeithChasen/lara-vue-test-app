@@ -18,7 +18,7 @@
                         </li>
                     </template>
                     <template v-else>
-                        <li v-if="currentUser.role.role === 'admin'">
+                        <li v-if="isAdmin">
                             <router-link to="/admin" class="nav-link">Admin</router-link>
                         </li>
                         <li class="nav-item dropdown">
@@ -49,6 +49,9 @@
         computed: {
             currentUser() {
                 return this.$store.getters.currentUser
+            },
+            isAdmin() {
+                return this.$store.getters.isAdmin
             }
         }
     }

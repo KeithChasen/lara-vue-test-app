@@ -7,7 +7,7 @@ export default {
         currentUser: user,
         isLoggedIn: !!user,
         auth_error: null,
-        isAdmin: user ? user.role.role === 'admin' : false,
+        isAdmin: false,
         users: [],
         photos: []
     },
@@ -30,6 +30,7 @@ export default {
                 payload.user,
                 {token: payload.access_token}
             );
+            state.isAdmin = payload.role === 'admin',
 
             localStorage.setItem('user', JSON.stringify(state.currentUser));
         },
@@ -39,6 +40,7 @@ export default {
         logout: state => {
             localStorage.removeItem('user');
             state.isLoggedIn = false;
+            state.isAdmin = false;
             state.currentUser = null;
         },
 
@@ -58,6 +60,14 @@ export default {
 },
     actions: {
         login: context => context.commit('login'),
+
+        logout: context => axios.post('/api/auth/logout')
+            .then((response) => {
+                if (response.status === 200) {
+                    context.commit('logout')
+                }
+            })
+            .catch((error) => {  }),
 
         getUsers: context => axios.get('/api/users')
             .then((response) => {

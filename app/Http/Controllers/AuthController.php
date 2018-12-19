@@ -104,9 +104,12 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token)
     {
+        $user = Auth::user();
+
         return response()->json([
             'access_token' => $token,
-            'user' => $this->returnAuthUser(),
+            'user' => $user,
+            'role' => $user->role->role,
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60
         ]);
@@ -123,13 +126,5 @@ class AuthController extends Controller
         }
 
         return true;
-    }
-
-    /**
-     * @return mixed
-     */
-    protected function returnAuthUser()
-    {
-        return Auth::Guard('api')->user()->with('role')->first();
     }
 }
