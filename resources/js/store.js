@@ -49,7 +49,12 @@ export default {
         deleteUser: (state, user) => {
             let index = state.users.indexOf(user);
             state.users.splice(index, 1);
-        }
+        },
+
+        deletePhoto: (state, photo) => {
+            let index = state.photos.indexOf(photo);
+            state.photos.splice(index, 1);
+        },
 },
     actions: {
         login: context => context.commit('login'),
@@ -78,5 +83,14 @@ export default {
                 }
             })
             .catch((error) => {  }),
+
+        removePhoto: (context, photo) =>
+            axios.delete(`/api/photos/${photo.id}`)
+                .then((response) => {
+                    if (response.status === 200) {
+                        context.commit('deletePhoto', photo)
+                    }
+                })
+                .catch((error) => {  }),
     }
 }

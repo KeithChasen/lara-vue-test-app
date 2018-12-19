@@ -109,14 +109,23 @@ class PhotoController extends Controller
      */
     public function destroy($id)
     {
-        $file = File::findOrFail($id);
-
-        if (Storage::disk('local')->exists('/public/' . $this->getUserDir() . '/' . $file->type . '/' . $file->name . '.' . $file->extension)) {
-            if (Storage::disk('local')->delete('/public/' . $this->getUserDir() . '/' . $file->type . '/' . $file->name . '.' . $file->extension)) {
-                return response()->json($file->delete());
-            }
+        if (!Gate::allows('admin')) {
+            return response()->json(['error' => 'Forbidden'], 403);
         }
 
-        return response()->json(false);
+        try {
+            $file = Picture::findOrFail($id);
+
+            if (Storage::disk('public')->exists($file->path)) {
+                Storage::disk('public')->delete($file->path);
+                $file->delete();
+            }
+
+            return response()->json([], 200);
+        } catch (\Exception $e) {
+            //todo: log stuff
+            return response()->json(['error' => 'Something went wrong'], 500);
+        }
+
     }
 }
