@@ -49,6 +49,11 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
+    public function scopeNonAdmin($query)
+    {
+        return $query->where('role_id', Role::where('role', Role::USER_ROLE)->first()->id);
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */

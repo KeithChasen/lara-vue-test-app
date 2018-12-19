@@ -2,13 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Picture;
+use App\Http\Requests\UploadPictureRequest;
+use App\Models\User;
+use App\Services\PictureService;
 use Illuminate\Http\Request;
 use Gate;
-use Storage;
 
 class PhotoController extends Controller
 {
+    protected $pictureService;
+
+    public function __construct(PictureService $pictureService)
+    {
+        $this->pictureService = $pictureService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +25,7 @@ class PhotoController extends Controller
     public function index()
     {
         if (Gate::allows('admin')) {
-            return response()->json(['photos' => Picture::all()], 200);
+            return response()->json(['photos' => $this->pictureService->all()], 200);
         }
 
         return response()->json(['error' => 'Forbidden'], 403);
@@ -39,30 +47,13 @@ class PhotoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UploadPictureRequest $request)
     {
         if (!Gate::allows('admin')) {
             return response()->json(['error' => 'Forbidden'], 403);
         }
 
-        $this->validate($request, [
-            'photo' => 'required|file|mimes:jpg,jpeg,png|max:1024'
-        ]);
-
-        $file = $request->file('photo');
-        $ext = $file->getClientOriginalExtension();
-        $size = $file->getSize();
-
-        $fileName = time().'.'. $ext;
-
-        $path = $file->storeAs('photos', $fileName, 'public');
-
-        $photo = Picture::create([
-            'path' => $path,
-            'size' => $size,
-            'extension' => $ext,
-        ]);
-
+        $photo = $this->pictureService->store($request->file('photo'));
 
         return response()->json(['photo' => $photo],201);
     }
@@ -75,7 +66,27 @@ class PhotoController extends Controller
      */
     public function show($id)
     {
-        //
+        if (!Gate::allows('admin')) {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
+        try {
+            $photo = $this->pictureService->find($id);
+            $userIds = $this->pictureService->getUserIds($photo);
+            $users = User::nonAdmin()->get();
+
+            return response()->json(
+                [
+                    'photo' => $photo,
+                    'users' => $users,
+                    'userIds' => $userIds
+                ],
+                200
+            );
+        } catch (\Exception $e) {
+            //todo: log stuff
+            return response()->json(['error' => 'Something went wrong'], 500);
+        }
     }
 
     /**
@@ -98,7 +109,30 @@ class PhotoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        if (!Gate::allows('admin')) {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
+        try {
+            $photo = $this->pictureService->find($id);
+
+            $userIds = $this->pictureService->getUserIds($photo);
+            $ids = $request->get('ids');
+
+            $detach = array_diff($userIds, $ids);
+            $attach = array_diff($ids,$userIds);
+
+            if (!empty($attach))
+                $photo->users()->attach($attach);
+
+            if (!empty($detach))
+                $photo->users()->detach($detach);
+
+            return response()->json([], 200);
+        } catch (\Exception $e) {
+            //todo: log stuff
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -114,12 +148,7 @@ class PhotoController extends Controller
         }
 
         try {
-            $file = Picture::findOrFail($id);
-
-            if (Storage::disk('public')->exists($file->path)) {
-                Storage::disk('public')->delete($file->path);
-                $file->delete();
-            }
+            $this->pictureService->delete($id);
 
             return response()->json([], 200);
         } catch (\Exception $e) {

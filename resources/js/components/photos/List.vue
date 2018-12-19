@@ -20,6 +20,7 @@
                     </td>
                     <td>{{ photo.size }}</td>
                     <td>{{ photo.extension }}</td>
+                    <router-link :to="`/admin/photos/edit/${photo.id}`" class="crud-button btn btn-info btn-sm">E</router-link>
                     <button class="crud-button btn btn-danger btn-sm" v-on:click="removePhoto(photo)">D</button>
                 </tr>
             </template>
