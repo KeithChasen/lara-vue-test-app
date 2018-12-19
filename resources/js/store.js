@@ -73,9 +73,6 @@ export default {
 
         getPhotos: context => axios.get('/api/photos')
             .then((response) => {
-
-                console.log(response);
-
                 if (response.status === 200) {
                     context.commit('updatePhotos', response.data.photos)
                 }

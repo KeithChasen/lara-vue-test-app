@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Picture;
 use Illuminate\Http\Request;
 use Gate;
+use Storage;
 
 class PhotoController extends Controller
 {
@@ -40,7 +41,30 @@ class PhotoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if (!Gate::allows('admin')) {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
+        $this->validate($request, [
+            'photo' => 'required|file|mimes:jpg,jpeg,png|max:1024'
+        ]);
+
+        $file = $request->file('photo');
+        $ext = $file->getClientOriginalExtension();
+        $size = $file->getSize();
+
+        $fileName = time().'.'. $ext;
+
+        $path = $file->storeAs('photos', $fileName, 'public');
+
+        $photo = Picture::create([
+            'path' => $path,
+            'size' => $size,
+            'extension' => $ext,
+        ]);
+
+
+        return response()->json(['photo' => $photo],201);
     }
 
     /**
@@ -85,6 +109,14 @@ class PhotoController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $file = File::findOrFail($id);
+
+        if (Storage::disk('local')->exists('/public/' . $this->getUserDir() . '/' . $file->type . '/' . $file->name . '.' . $file->extension)) {
+            if (Storage::disk('local')->delete('/public/' . $this->getUserDir() . '/' . $file->type . '/' . $file->name . '.' . $file->extension)) {
+                return response()->json($file->delete());
+            }
+        }
+
+        return response()->json(false);
     }
 }

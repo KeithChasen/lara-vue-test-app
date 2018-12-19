@@ -15,7 +15,9 @@
             </template>
             <template v-else>
                 <tr v-for="photo in photos" :key="photo.id">
-                    <td>{{ photo.url }}</td>
+                    <td>
+                        <img :src='`/storage/${photo.path}`' alt="">
+                    </td>
                     <td>{{ photo.size }}</td>
                     <td>{{ photo.extension }}</td>
                     <button class="crud-button btn btn-danger btn-sm" v-on:click="removePhoto(photo)">D</button>
@@ -54,7 +56,11 @@
         margin-bottom: 20px;
     }
     .crud-button {
-        margin-top: 5px;
+        margin-top: 10px;
         margin-right: 5px;
+    }
+    img {
+        width: 50px;
+        height: 50px;
     }
 </style>

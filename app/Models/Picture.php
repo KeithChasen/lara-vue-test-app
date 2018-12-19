@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Picture extends Model
 {
     protected $fillable = [
-        'name', 'email', 'password',
+        'path', 'extension', 'size',
     ];
 
     /**
