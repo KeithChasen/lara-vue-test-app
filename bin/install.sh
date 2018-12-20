@@ -35,6 +35,15 @@ echo Filling Data Base with test data
 php artisan db:seed --class=RolesSeeder
 php artisan db:seed --class=AdminSeeder
 
+echo Link storage images folder to public folder
+php artisan storage:link
+
+npm install
+
+npm run dev
+
+php artisan serve
+
 exit
 
 fi
