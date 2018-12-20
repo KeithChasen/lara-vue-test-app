@@ -40,7 +40,6 @@ export default {
         logout: state => {
             localStorage.removeItem('user');
             state.isLoggedIn = false;
-            state.isAdmin = false;
             state.currentUser = null;
         },
 

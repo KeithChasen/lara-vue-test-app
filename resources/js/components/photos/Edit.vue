@@ -4,7 +4,6 @@
             <div class="form-group">
                 <img :src='`/storage/${photo.path}`' alt="">
             </div>
-
             <ul class="list-group">
                 <template v-if="!users.length">
                     <li class="text-center list-group-item">No Users</li>
@@ -18,9 +17,6 @@
                     </li>
                 </template>
             </ul>
-
-            <p>Checked: {{checked}}</p>
-
             <button type="submit" class="btn btn-primary">Update</button>
         </form>
         <div class="errors" v-if="errors">
