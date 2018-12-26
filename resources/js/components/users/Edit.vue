@@ -70,7 +70,7 @@
 
                 axios.put(`/api/users/${this.$route.params.id}`, this.user)
                     .then((response) => {
-                        this.$router.push('/users');
+                        this.$router.push('/admin/users');
                     });
             },
             getConstraints() {

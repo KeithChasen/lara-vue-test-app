@@ -25,13 +25,9 @@ export default {
         loginSuccess: (state, payload) => {
             state.auth_error = null;
             state.isLoggedIn = true;
-            state.currentUser = Object.assign(
-                {},
-                payload.user,
-                {token: payload.access_token}
-            );
+            let token = payload.access_token
+            state.currentUser = ({...payload.user, token})
             state.isAdmin = payload.role === 'admin',
-
             localStorage.setItem('user', JSON.stringify(state.currentUser));
         },
 
