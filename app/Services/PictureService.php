@@ -101,7 +101,7 @@ class PictureService
         $userIds = $this->getUserIds($photo);
 
         $detach = array_diff($userIds, $ids);
-        $attach = array_diff($ids,$userIds);
+        $attach = array_diff($ids, $userIds);
 
         if (!empty($attach))
             $photo->users()->attach($attach);
