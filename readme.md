@@ -1,3 +1,12 @@
+Description
+   ----------- 
+ 
+ Example of simple application with backend on Laravel 5.7 and frontend on VueJS.
+ There's two user roles: admin and user.
+ Admin can create users, upload photos and provide users with ability to view particular photos.
+ User can login and view only those photos he has rights to view according to the settings provided by admin
+ 
+ 
  Installation
    -----------
    
